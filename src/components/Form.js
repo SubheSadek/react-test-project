@@ -42,7 +42,7 @@ class Form extends Component{
             formInvalid = true;
         }
         if(fields.email && !validateEmail.test(fields.email)){
-            errors.email = "Invalid Email.";
+            errors.email = "Invalid email format.";
             formInvalid = true;
         }
         
@@ -57,7 +57,7 @@ class Form extends Component{
         }
 
         if(fields.img_url && !pattern.test(fields.img_url)){
-            errors.img_url = "Invalid url." ;
+            errors.img_url = "Invalid url format." ;
             formInvalid = true;
         }
         if(formInvalid){

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import './form.css'
+import '../css/form.css'
+import axios from "./axios";
 class Form extends Component{
 
     state = {
@@ -7,17 +8,18 @@ class Form extends Component{
             name: '',
             email:'',
             title:'',
-            img_url:'',
+            image:'',
         },
         errors: {
             name: '',
             email:'',
             title:'',
-            img_url:'',
+            image:'',
         },
         
     };
-    onFormSubmit = e =>{
+    
+    onFormSubmit = async e =>{
         e.preventDefault();
         let validateEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -51,17 +53,29 @@ class Form extends Component{
             formInvalid = true;
         }
         
-        if(fields.img_url === ""){
-            errors.img_url = "Image url is required.";
+        if(fields.image === ""){
+            errors.image = "Image url is required.";
             formInvalid = true;
         }
 
-        if(fields.img_url && !pattern.test(fields.img_url)){
-            errors.img_url = "Invalid url format." ;
+        if(fields.image && !pattern.test(fields.image)){
+            errors.image = "Invalid url format." ;
             formInvalid = true;
         }
         if(formInvalid){
             return this.setState({ errors: errors });
+        }
+
+        const res = await axios.post('/user/createUser/', fields);
+        if(res.status === 200){
+            this.props.onSubmit(res.data);
+            
+            fields.name = "";
+            fields.email = "";
+            fields.title = "";
+            fields.image = "";
+            
+            this.setState({ fields });
         }
         
         
@@ -105,8 +119,8 @@ class Form extends Component{
                                         </div>
                                         <div className="col-md-12">
                                             <label htmlFor="image" className="form-label">Image URL</label>
-                                            <input value = {this.state.formData.img_url} onChange={this.handleChange.bind(this, "img_url")} type="text" className="form-control" id="image" />
-                                            <span className="error-text">{this.state.errors.img_url}</span>
+                                            <input value = {this.state.formData.image} onChange={this.handleChange.bind(this, "image")} type="text" className="form-control" id="image" />
+                                            <span className="error-text">{this.state.errors.image}</span>
                                         </div>
                                         <div className="col-3 mx-auto">
                                             <button type="submit" className="btn btn-primary d-block w-100 py-2"> Submit </button>

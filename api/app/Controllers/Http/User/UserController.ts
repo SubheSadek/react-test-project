@@ -30,6 +30,10 @@ export default class UserController {
     return this.userService.editUser(ctx);
   }
 
+  async upload(ctx : HttpContextContract){
+    return this.userService.upload(ctx);
+  }
+
 
 
 

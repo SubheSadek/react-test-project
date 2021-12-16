@@ -3,6 +3,7 @@ import '../css/form.css'
 import axios from "./axios";
 import unplash from 'axios';
 import ImageList from "./imageLists";
+import Avatar from './upload.js'
 class Form extends Component{
 
     state = {
@@ -59,14 +60,14 @@ class Form extends Component{
         }
         
         if(fields.image === ""){
-            errors.image = "Image url is required.";
+            errors.image = "Image is required.";
             formInvalid = true;
         }
 
-        if(fields.image && !pattern.test(fields.image)){
-            errors.image = "Invalid url format." ;
-            formInvalid = true;
-        }
+        // if(fields.image && !pattern.test(fields.image)){
+        //     errors.image = "Invalid url format." ;
+        //     formInvalid = true;
+        // }
         if(formInvalid){
             return this.setState({ errors: errors });
         }
@@ -113,25 +114,31 @@ class Form extends Component{
         
     }
     
-    getImageLink = async image =>{
+    // getImageLink = async image =>{
+    //     let fields = this.state.formData;
+    //     fields['image'] = image;
+    //     this.setState({ fields });
+    //     this.setState({isImage: false});
+    // }
+    
+    onUpload = async image =>{
         let fields = this.state.formData;
         fields['image'] = image;
         this.setState({ fields });
-        this.setState({isImage: false});
     }
     
     render(){
         let isLoading = this.state.isLoading;
         let isImage = this.state.isImage;
-        let imagelists;
+        // let imagelists;
         
         if(isImage){
-            imagelists = <ImageList onClick={this.getImageLink} images={this.state.images} />;
+            // imagelists = <ImageList onClick={this.getImageLink} images={this.state.images} />;
         }
         
         return(
             <span>
-                {imagelists}
+                {/* {imagelists} */}
                 <div className="_react_form_wrapper">
                     <div className="_react_form_wrap">
                         <div className="container">
@@ -150,12 +157,12 @@ class Form extends Component{
                                                     <input value = {this.state.formData.email} onChange={this.handleChange.bind(this, "email")} type="text" className="form-control" id="email" />
                                                     <span className="error-text">{this.state.errors.email}</span>
                                                 </div>
-                                            <div className="col-md-12">
+                                               <div className="col-md-12">
                                                     <label htmlFor="title" className="form-label">Title</label>
                                                     <input value = {this.state.formData.title} onChange={this.handleChange.bind(this, "title")} type="text" className="form-control" id="title" />
                                                     <span className="error-text">{this.state.errors.title}</span>
                                                 </div>
-                                                <div className="col-md-9">
+                                                {/* <div className="col-md-9">
                                                     <label htmlFor="image" className="form-label">Image URL</label>
                                                     <input value = {this.state.formData.image} onChange={this.handleChange.bind(this, "image")} type="text" className="form-control" id="image" />
                                                     <span className="error-text">{this.state.errors.image}</span>
@@ -166,7 +173,13 @@ class Form extends Component{
                                                             Get Links
                                                         </span>
                                                     </p>
+                                                </div> */}
+                                                
+                                                <div  className="col-md-12">
+                                                    <Avatar onUpload = {this.onUpload} />
+                                                    <span className="error-text">{this.state.errors.image}</span>
                                                 </div>
+                                                
                                                 <div className="col-5 mx-auto">
                                                     {isLoading ?
                                                     <button className="btn btn-primary" type="button" disabled>

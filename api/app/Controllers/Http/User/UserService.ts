@@ -24,6 +24,10 @@ export default class UserService {
       return this.userQuery.editUser(ctx);
     }
 
+    public async upload(ctx){
+      return this.userQuery.upload(ctx);
+    }
+
 
 
 };

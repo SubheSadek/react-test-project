@@ -18,3 +18,8 @@
     margin-top: 35px;
     background-color: #b5b5b5;
 }
+
+.inplace_edit .error-text{
+    font-size: 15px;
+    color: red;
+  }

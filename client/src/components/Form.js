@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import '../css/form.css'
 import axios from "./axios";
+import unplash from 'axios';
+import ImageList from "./imageLists";
 class Form extends Component{
 
     state = {
@@ -16,7 +18,10 @@ class Form extends Component{
             title:'',
             image:'',
         },
-        
+        isLoading:false,
+        isImage:false,
+        linkModal:false,
+        images:[],
     };
     
     onFormSubmit = async e =>{
@@ -65,7 +70,8 @@ class Form extends Component{
         if(formInvalid){
             return this.setState({ errors: errors });
         }
-
+        
+        this.setState({isLoading:true})
         const res = await axios.post('/user/createUser/', fields);
         if(res.status === 200){
             this.props.onSubmit(res.data);
@@ -77,12 +83,13 @@ class Form extends Component{
             
             this.setState({ fields });
         }
+        this.setState({isLoading:false}) 
         
         
         
     };
 
-   handleChange(field, e) {
+    handleChange(field, e) {
         let fields = this.state.formData;
         fields[field] = e.target.value;
         this.setState({ fields });
@@ -90,49 +97,93 @@ class Form extends Component{
         let errors = this.state.errors;
         errors[field] = "";
         this.setState({ errors });
-      }
+    }
 
+   getLinks = async() =>{
+        const res = await unplash.get('https://api.unsplash.com/search/photos', {
+            params: { query: 'avatar'},
+            headers: {
+                Authorization: 'Client-ID 2b98c1afb0aed3b3d94a1866bdc3ac013d21a0c86d236a0fee32355c331c0296'
+            }
+        })
+        if(res.status === 200){
+            this.setState({images:res.data.results});
+            this.setState({isImage:true});
+        }
+        
+    }
+    
+    getImageLink = async image =>{
+        let fields = this.state.formData;
+        fields['image'] = image;
+        this.setState({ fields });
+        this.setState({isImage: false});
+    }
+    
     render(){
+        let isLoading = this.state.isLoading;
+        let isImage = this.state.isImage;
+        let imagelists;
+        
+        if(isImage){
+            imagelists = <ImageList onClick={this.getImageLink} images={this.state.images} />;
+        }
+        
         return(
-        <div className="_react_form_wrapper">
-            <div className="_react_form_wrap">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-xl-6 col-lg-7 col-md-12 col-sm-12 mx-auto">
-                            <div className="_react_form_content">
-                                <div className="_react_form_content_inner">
-                                    <form onSubmit={this.onFormSubmit} className="row g-3">
-                                        <div className="col-md-12">
-                                            <label htmlFor="name" className="htmlForm-label">Name</label>
-                                            <input autoComplete="off" value = { this.state.formData["name"] } onChange={this.handleChange.bind(this, "name")}  type="text" className="form-control" />
-                                            <span className="error-text">{this.state.errors["name"]}</span>
+            <span>
+                {imagelists}
+                <div className="_react_form_wrapper">
+                    <div className="_react_form_wrap">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-xl-6 col-lg-7 col-md-12 col-sm-12 mx-auto">
+                                    <div className="_react_form_content">
+                                        <div className="_react_form_content_inner">
+                                            <form onSubmit={this.onFormSubmit} className="row g-3">
+                                                <div className="col-md-12">
+                                                    <label htmlFor="name" className="htmlForm-label">Name</label>
+                                                    <input autoComplete="off" value = { this.state.formData["name"] } onChange={this.handleChange.bind(this, "name")}  type="text" className="form-control" />
+                                                    <span className="error-text">{this.state.errors["name"]}</span>
+                                                </div>
+                                                <div className="col-md-12">
+                                                    <label htmlFor="inputEmail4" className="form-label">Email</label>
+                                                    <input value = {this.state.formData.email} onChange={this.handleChange.bind(this, "email")} type="text" className="form-control" id="email" />
+                                                    <span className="error-text">{this.state.errors.email}</span>
+                                                </div>
+                                            <div className="col-md-12">
+                                                    <label htmlFor="title" className="form-label">Title</label>
+                                                    <input value = {this.state.formData.title} onChange={this.handleChange.bind(this, "title")} type="text" className="form-control" id="title" />
+                                                    <span className="error-text">{this.state.errors.title}</span>
+                                                </div>
+                                                <div className="col-md-9">
+                                                    <label htmlFor="image" className="form-label">Image URL</label>
+                                                    <input value = {this.state.formData.image} onChange={this.handleChange.bind(this, "image")} type="text" className="form-control" id="image" />
+                                                    <span className="error-text">{this.state.errors.image}</span>
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <p className="btn_odal_open">
+                                                        <span onClick={this.getLinks}>
+                                                            Get Links
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <div className="col-5 mx-auto">
+                                                    {isLoading ?
+                                                    <button className="btn btn-primary" type="button" disabled>
+                                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                        Please wait...
+                                                    </button>:
+                                                    <button type="submit" className="btn btn-primary col-7 d-block w-100 py-2"> Submit </button>}
+                                                </div> 
+                                            </form>
                                         </div>
-                                         <div className="col-md-12">
-                                            <label htmlFor="inputEmail4" className="form-label">Email</label>
-                                            <input value = {this.state.formData.email} onChange={this.handleChange.bind(this, "email")} type="text" className="form-control" id="email" />
-                                            <span className="error-text">{this.state.errors.email}</span>
-                                        </div>
-                                       <div className="col-md-12">
-                                            <label htmlFor="title" className="form-label">Title</label>
-                                            <input value = {this.state.formData.title} onChange={this.handleChange.bind(this, "title")} type="text" className="form-control" id="title" />
-                                            <span className="error-text">{this.state.errors.title}</span>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <label htmlFor="image" className="form-label">Image URL</label>
-                                            <input value = {this.state.formData.image} onChange={this.handleChange.bind(this, "image")} type="text" className="form-control" id="image" />
-                                            <span className="error-text">{this.state.errors.image}</span>
-                                        </div>
-                                        <div className="col-3 mx-auto">
-                                            <button type="submit" className="btn btn-primary d-block w-100 py-2"> Submit </button>
-                                        </div> 
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </span>
         )
     }
 }

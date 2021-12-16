@@ -26,6 +26,10 @@ export default class UserController {
     return this.userService.deleteUser(ctx);
   }
 
+  async editUser(ctx : HttpContextContract){
+    return this.userService.editUser(ctx);
+  }
+
 
 
 

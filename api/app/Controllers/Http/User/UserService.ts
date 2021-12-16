@@ -20,6 +20,10 @@ export default class UserService {
       return this.userQuery.deleteUser(ctx);
     }
 
+    public async editUser(ctx){
+      return this.userQuery.editUser(ctx);
+    }
+
 
 
 };

@@ -4,5 +4,6 @@ Route.group(()=>{
  Route.post('/createUser', 'User/UserController.createUser')
  Route.get('/getUsers', 'User/UserController.getUsers')
  Route.post('/deleteUser', 'User/UserController.deleteUser')
+ Route.post('/editUser', 'User/UserController.editUser')
 
 }).prefix('user')

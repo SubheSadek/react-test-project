@@ -15,4 +15,11 @@ export default class UserQuery{
     return User.query().where('id', id).delete();
   }
 
+  async editUser(ctx){
+    let data = ctx.request.all();
+    let uid = data.id;
+    delete data.id;
+    return User.query().where('id', uid).update(data);
+  }
+
 }
